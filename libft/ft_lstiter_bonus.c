@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   printfunction.h                                    :+:      :+:    :+:   */
+/*   ft_lstiter_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lpaysant <lpaysant@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/03 15:17:17 by lpaysant          #+#    #+#             */
-/*   Updated: 2024/12/03 15:40:46 by lpaysant         ###   ########.fr       */
+/*   Created: 2024/11/26 18:12:41 by lpaysant          #+#    #+#             */
+/*   Updated: 2024/12/02 15:04:12 by lpaysant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PRINTFUNCTION_H
-# define PRINTFUNCTION_H
+#include "libft.h"
 
-void	ft_puthexa_up(unsigned int ptr, int fd, int *count);
-void	ft_puthexa_low(unsigned int ptr, int fd, int *count);
-void	ft_puthexa(void *ptr, int fd, int *count);
-void	ft_putnbrun_fd(unsigned int n, int fd, int *count);
-
-#endif
+void	ft_lstiter(t_list *lst, void (*f)(void *))
+{
+	while (lst != NULL)
+	{
+		f(lst->content);
+		lst = lst->next;
+	}
+}

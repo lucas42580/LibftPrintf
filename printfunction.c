@@ -6,59 +6,66 @@
 /*   By: lpaysant <lpaysant@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 15:10:24 by lpaysant          #+#    #+#             */
-/*   Updated: 2024/12/03 15:37:45 by lpaysant         ###   ########.fr       */
+/*   Updated: 2024/12/18 13:16:42 by lpaysant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-void	ft_puthexa_up(unsigned int ptr, int fd, int *count)
+int	putnbrbase(unsigned long nbr, const char *base, int fd, ssize_t *count)
 {
-	char	*hexbase;
+	unsigned long	base_len;
 
-	hexbase = "0123456789ABCDEF";
-	if (ptr >= 16)
-		ft_puthexa_up((ptr / 16), fd, count);
-	ft_putchar_fd(hexbase[ptr % 16], 1);
+	base_len = 0;
+	while (base[base_len])
+		base_len++;
+	if (nbr >= base_len)
+		putnbrbase(nbr / base_len, base, fd, count);
+	if (ft_putchar(base[nbr % base_len], fd) == -1)
+		return (-1);
 	(*count)++;
+	return (0);
 }
 
-void	ft_puthexa_low(unsigned int ptr, int fd, int *count)
+int	ft_putnbr(int n, int fd, ssize_t *count)
 {
-	char	*hexbase;
-
-	hexbase = "0123456789abcdef";
-	if (ptr >= 16)
-		ft_puthexa_low((ptr / 16), fd, count);
-	ft_putchar_fd(hexbase[ptr % 16], 1);
-	(*count)++;
-}
-
-void	ft_puthexa(void *ptr, int fd, int *count)
-{
-	char			*hexbase;
-	unsigned long	ptr1;
-
-	hexbase = "0123456789abcdef";
-	ptr1 = (unsigned long)ptr;
-	if ((unsigned long)ptr1 >= 16)
+	if (n < 0)
 	{
-		ft_puthexa((void *)(ptr1 / 16), fd, count);
-	}
-	ft_putchar_fd(hexbase[ptr1 % 16], 1);
-	(*count)++;
-}
-
-void	ft_putnbrun_fd(unsigned int n, int fd, int *count)
-{
-	if (n > 9)
-	{
-		ft_putnbrun_fd(n / 10, fd, count);
-		ft_putnbrun_fd(n % 10, fd, count);
-	}
-	else
-	{
-		ft_putchar_fd(n + '0', fd);
+		if (ft_putchar('-', fd) == -1)
+			return (-1);
+		n = n * (-1);
 		(*count)++;
 	}
+	if (n == -2147483648)
+	{
+		(*count) += 10;
+		if (write(fd, "2147483648", 10) == -1)
+			return (-1);
+	}
+	if (n > 9)
+	{
+		ft_putnbr(n / 10, fd, count);
+		ft_putnbr(n % 10, fd, count);
+	}
+	if (n >= 0 && n <= 9)
+	{
+		(*count)++;
+		if (ft_putchar(n + '0', fd) == -1)
+			return (-1);
+	}
+	return (0);
+}
+
+int	ft_putstr(char *str, int fd)
+{
+	if (write(fd, str, ft_strlen(str)) == -1)
+		return (-1);
+	return (0);
+}
+
+int	ft_putchar(int c, int fd)
+{
+	if (write(fd, &c, 1) == -1)
+		return (-1);
+	return (0);
 }
